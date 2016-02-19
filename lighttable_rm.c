@@ -1,0 +1,99 @@
+/*    */
+#include <stdio.h>
+
+int N_TASKS = 4;                         //Enter number of tasks and modify
+float T[4] = {2.0,5.0,7.0,13.0};                   //length of arrays.
+                                         //Enter relative Deadlines and
+float C[4] = {1.0,1.0,1.0,2.0};                    //Completion times along with
+int rdl[4] = {2,5,7,13};                 //LCM.
+int ret[4] = {1,1,1,2};
+
+int LCM = 910;
+
+void processor_utilization(){
+int i;
+float temp = 0;
+  for(i = 0; i < N_TASKS; i ++){
+  temp = temp + (C[i]/T[i]);
+  }
+  printf("EX:8 Processor Utilization Factor is:%f\n",temp);
+}
+
+
+int updateParams(int tid_current){
+ret[tid_current]--;
+
+int i,flag;
+	 for(i=0;i<N_TASKS;i++){
+	 rdl[i]--;
+
+      if(rdl[i] == 0 && ret[i] != 0){
+       flag = 1;
+       break;
+      }
+     else {
+       flag = 0;
+     }
+
+		  if(rdl[i] == 0){
+			  rdl[i] = T[i];
+			  ret[i] = C[i];
+		    }
+
+	  }
+
+  return(flag);
+}
+
+
+
+int findBestTask(){
+
+	int j;
+	int min_val = 100;
+  int min_rdl_id = -1;
+
+
+
+	for(j=0;j<N_TASKS;j++){
+
+		if(min_val > T[j] && ret[j] > 0){
+			min_val = T[j];
+			min_rdl_id = j;
+    }
+
+  }
+return(min_rdl_id);
+}
+
+void RM_feasibility(){
+int count = 1;
+int ddl_missed;
+
+  while(count <= LCM){
+    int i = findBestTask();
+    ddl_missed = updateParams(i);
+    if (ddl_missed == 1){
+      printf("Deadline missed,Task set is not schedulable by RM Scheduling\n");
+    break;}
+    else{
+    count++;
+    }
+  }
+
+  if (ddl_missed != 1){
+  printf("Tasks are schedulable by RM scheduling\n");
+  }
+
+
+}
+
+
+void main(){
+
+processor_utilization();
+RM_feasibility();
+
+
+
+}
